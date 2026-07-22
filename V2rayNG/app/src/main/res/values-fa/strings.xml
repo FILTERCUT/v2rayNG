@@ -2,6 +2,7 @@
 <resources>
     <string name="app_widget_name">تعویض</string>
     <string name="app_tile_name">تعویض</string>
+    <string name="app_name">فیلترشکن سه‌پنج</string>
     <string name="app_tile_first_use">برای اولین استفاده از این قابلیت، لطفاً ابتدا از داخل برنامه یک سرور اضافه کنید</string>
     <string name="navigation_drawer_open">باز کردن منو کشویی</string>
     <string name="navigation_drawer_close">بستن منو کشویی</string>
