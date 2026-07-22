@@ -188,6 +188,11 @@ class MainActivity : HelperBaseComponentActivity() {
             checkAndRequestPermission(PermissionType.ACCESS_LOCAL_NETWORK) {}
         }
         CoreServiceManager.startVService(this)
+        // کد باز شدن خودکار سایت سه پنج
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.data = Uri.parse("https://35anj.net")
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
     }
 
     private fun restartV2Ray() {
