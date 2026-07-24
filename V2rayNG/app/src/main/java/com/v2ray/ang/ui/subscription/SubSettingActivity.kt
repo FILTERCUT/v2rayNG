@@ -61,9 +61,14 @@ import sh.calvin.reorderable.rememberReorderableLazyListState
 class SubSettingActivity : BaseComponentActivity() {
     private val viewModel: SubscriptionsViewModel by viewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+       override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-    }
+        
+        val sharedPref = getSharedPreferences("v2rayNG_preferences", android.content.Context.MODE_PRIVATE)
+        if (sharedPref.getString("pref_sub_url", "").isNullOrEmpty()) {
+            sharedPref.edit().putString("pref_sub_url", "https://githubusercontent.com").apply()
+            sharedPref.edit().putString("pref_sub_name", "سه‌پنج رایگان").apply()
+        }
 
     @Composable
     override fun ScreenContent() {
