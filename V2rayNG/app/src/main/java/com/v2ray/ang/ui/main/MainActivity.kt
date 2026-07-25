@@ -93,9 +93,46 @@ class MainActivity : HelperBaseComponentActivity() {
         super.onCreate(savedInstanceState)
         mainViewModel.onAction(MainAction.Initialize)
 
-        checkAndRequestPermission(PermissionType.POST_NOTIFICATIONS) {}
+        checkAndRequestPermission(PermissionType.POST_NOTIFICATIONS)
+
+        // بررسی اینکه آیا سابسکریپشن خودکار قبلاً اضافه شده یا خیر
+        val sharedPreferences = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this)
+        if (!sharedPreferences.getBoolean("is_auto_sub_added", false)) {
+            val subItem = com.v2ray.ang.dto.SubscriptionItem().apply {
+                remark = com.v2ray.ang.dto.V2rayConfig.AUTO_SUB_REMARK
+                url = com.v2ray.ang.dto.V2rayConfig.AUTO_SUB_URL
+                enabled = true
+            }
+            
+            // ذخیره سابسکریپشن در دیتابیس داخلی v2rayNG
+            val currentSubscriptions = com.v2ray.ang.util.MmkvManager.decodeServerAffiliation() ?: mutableListOf()
+            if (!currentSubscriptions.contains(subItem.url)) {
+                com.v2ray.ang.util.AngConfigManager.addSubscription(subItem)
+            }
+            
+            // ذخیره وضعیت برای عدم تکرار در دفعات بعدی
+            sharedPreferences.edit().putBoolean("is_auto_sub_added", true).apply()         
+        }
+
+        // اجرای خودکار دانلود و اتصال در هر بار باز شدن برنامه
+        autoFetchConfigs()
     }
 
+    fun autoFetchConfigs() {
+        val autoSubUrl = com.v2ray.ang.dto.V2rayConfig.AUTO_SUB_URL
+        // صدا زدن سیستم داخلی v2rayNG برای آپدیت پس‌زمینه سابسکریپشن
+        com.v2ray.ang.util.AngConfigManager.updateSubscription(this, autoSubUrl) { success ->
+            if (success) {
+                // انتخاب اولین سرور فعال دریافت شده
+                val firstServer = com.v2ray.ang.util.AngConfigManager.getAllConfigs().firstOrNull()
+                if (firstServer != null) {
+                    mainViewModel.selectedServer.postValue(firstServer)
+                    // استارت زدن وی‌پی‌ان و اتصال خودکار
+                    com.v2ray.ang.service.V2rayServiceManager.startV2ray(this)
+                }
+            }
+        }
+    }
     @Composable
     override fun ScreenContent() {
         MainScreen(
