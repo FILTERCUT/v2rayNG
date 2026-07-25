@@ -466,3 +466,5 @@ data class V2rayConfig(
         }
     }
 }
+const val AUTO_SUB_URL = "https://raw.githubusercontent.com/ebrasha/free-v2ray-public-list/refs/heads/main/V2Ray-Config-By-EbraSha-All-Type.txt"
+const val AUTO_SUB_REMARK = "سرورهای خودکار رایگان"
